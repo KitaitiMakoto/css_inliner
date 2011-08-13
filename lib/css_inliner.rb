@@ -9,10 +9,43 @@ module CSSInliner
   class << self
     def process(input, output = nil)
       html = File.read(input)
-      csss = find_css html, File.dirname(input)
+      doc = Nokogiri.HTML html
+      csss = find_css doc, File.dirname(input)
       css_parser = CssParser::Parser.new
       csss.each {|css| css_parser.add_block! css}
+      css_map = create_css_map css_parser
+      doc = inline doc, css_map
 
+      if output
+        open(output, 'w') {|f| f.write doc.to_s}
+      else
+        $stdout.write doc.to_s
+      end
+    end
+
+  private
+
+    def find_css(doc, basedir)
+      bases = doc.css 'base'
+      basedir = bases[0]['href'] unless bases.empty?
+
+      externals = doc.css('link[rel="stylesheet"]').collect do |link|
+        begin
+          File.read File.join(basedir, link['href'])
+        rescue Errno::ENOENT
+          ''
+        end
+      end
+
+      style_elems = doc.css('style').collect do |style|
+        style.inner_text
+      end
+
+      doc.css('link[rel="stylesheet"], style').remove
+      externals + style_elems
+    end
+
+    def create_css_map(css_parser)
       selectors = css_parser.enum_for :each_selector
       rules = {}
       i = 0
@@ -23,42 +56,37 @@ module CSSInliner
                        rules[sel],
                        CssParser::RuleSet.new(sel, dec)
                      )
-        rules[sel].parse_selectors! sel
       end
-
-
-      require 'pp'
-      p rules['body'].selectors
-
-
-      # integrated_css = csss.inject {|result, css| result.merge css}
-      # inline html, integrated_css
+      rules
     end
 
-  private
-
-    def find_css(html, basedir)
-      doc = Nokogiri.HTML html
-      bases = doc.css 'base'
-      basedir = bases[0]['href'] unless bases.empty?
-
-      styles = doc.css('style').collect do |style|
-        style.inner_text
+    def inline(doc, css_map)
+      original_style = {}
+      doc.css('*[style]').each do |elem|
+        original_style[elem] = elem['style']
       end
 
-      externals = doc.css('link[rel="stylesheet"]').collect do |link|
-        begin
-          File.read File.join(basedir, link['href'])
-        rescue Errno::ENOENT
-          ''
+      styles = {}
+      css_map.each_pair do |sel, rule_set|
+        next if sel =~ /@/
+        # rule_set.each_declaration {|prop, val, imp| p [prop, val, imp]}
+        doc.css(sel).each_with_index do |elem, i|
+          styles[elem] = CssParser::RuleSet.new(nil, nil) unless styles[elem]
+          styles[elem] = CssParser.merge styles[elem], rule_set
         end
       end
 
-      doc.css('link[rel="stylesheet"], style').remove
-      styles + externals
-    end
+      original_style.each_pair do |elem, style|
+        styles[elem] = CssParser::RuleSet.new(nil, nil) unless styles[elem]
+        rs = CssParser::RuleSet.new(nil, style)
+        styles[elem] = CssParser.merge styles[elem], rs
+      end
 
-    def parse_css(csss)
+      styles.each_pair do |elem, rule_set|
+        elem['style'] = rule_set.declarations_to_s
+      end
+
+      doc
     end
   end
 end
