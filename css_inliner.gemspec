@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
 require "css_inliner/version"
 
@@ -7,7 +6,7 @@ Gem::Specification.new do |s|
   s.version     = CSSInliner::VERSION
   s.authors     = ["KITAITI Makoto"]
   s.email       = ["KitaitiMakoto@gmail.com"]
-  s.homepage    = ""
+  s.homepage    = "https://gitorious.org/css_inliner"
   s.summary     = %q{inline CSS into HTML attribute of elements}
   s.description = %q{
     inline CSS from external file(s) and/or style elment(s) in head element
@@ -22,8 +21,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.has_rdoc      = false
 
-  s.add_runtime_dependency "nokogiri"
-  s.add_runtime_dependency "css_parser"
+  s.add_runtime_dependency "nokogiri", '~> 1'
+  s.add_runtime_dependency "css_parser", '~> 1'
 
-  s.add_development_dependency "test-unit"
+  s.add_development_dependency "test-unit", '~> 2'
 end

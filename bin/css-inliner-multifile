@@ -1,0 +1,30 @@
+#!/usr/local/bin/ruby
+require 'optparse'
+require 'fileutils'
+require 'css_inliner'
+
+Version = CSSInliner::VERSION
+opt = OptionParser.new
+options = {}
+
+opt.on('-d DIR', '--dir=DIR', 'output directory') {|v| options[:dir] = v}
+opt.on('-i [SUFFIX]', '--in-place', '--overwrite', 'inplace editing') do |v|
+  options[:'in-place'] = true
+  options[:suffix] = v
+end
+opt.on('-e ELEMENT', '--element', 'root element') {|v| options[:element] = v}
+
+opt.parse! ARGV
+ARGV.each do |file|
+  processed = CSSInliner.process File.read(file), File.dirname(file), options[:element]
+  if options[:'in-place']
+    FileUtils.cp(file, file + options[:suffix]) if options[:suffix]
+    File.open(file, 'w') {|f| f.write processed}
+  elsif options[:dir]
+    File.open(File.join(options[:dir], File.basename(file)), 'w') {|f| f.write processed}
+  else
+    $stdout.write processed
+  end
+end
+
+exit 0

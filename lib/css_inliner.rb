@@ -7,8 +7,10 @@ require 'css_inliner/inliner'
 
 module CSSInliner
   class << self
-    def process(html, basedir = '.')
-      Inliner.new(html, basedir).inline.to_s
+    def process(html, basedir = '.', element = nil)
+      doc = Inliner.new(html, basedir).inline
+      doc = doc.css(element)[0] if element
+      doc.to_s
     end
   end
 end
