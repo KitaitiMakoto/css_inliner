@@ -7,20 +7,18 @@ require 'css_inliner/version'
 
 module CSSInliner
   class << self
-    def process(input, output = nil)
-      html = File.read(input)
+    def process(html, basedir = '.')
+      # Make DOM
       doc = Nokogiri.HTML html
-      csss = find_css doc, File.dirname(input)
+
+      # Structure CSS
+      csss = find_css doc, basedir
       css_parser = CssParser::Parser.new
       csss.each {|css| css_parser.add_block! css}
       css_map = create_css_map css_parser
-      doc = inline doc, css_map
 
-      if output
-        open(output, 'w') {|f| f.write doc.to_s}
-      else
-        $stdout.write doc.to_s
-      end
+      # Inline CSS
+      inline(doc, css_map).to_s
     end
 
   private
@@ -68,9 +66,9 @@ module CSSInliner
 
       styles = {}
       css_map.each_pair do |sel, rule_set|
-        next if sel =~ /@/
-        # rule_set.each_declaration {|prop, val, imp| p [prop, val, imp]}
-        doc.css(sel).each_with_index do |elem, i|
+        next if sel =~ /@|:/
+        body = doc.css('body')
+        body.css(sel).each_with_index do |elem, i|
           styles[elem] = CssParser::RuleSet.new(nil, nil) unless styles[elem]
           styles[elem] = CssParser.merge styles[elem], rule_set
         end
