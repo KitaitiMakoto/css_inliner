@@ -1,0 +1,20 @@
+#!/usr/local/bin/ruby
+require 'optparse'
+require 'css_inliner'
+
+opt = OptionParser.new
+Version = CSSInliner::VERSION
+options = {}
+
+opt.on('-o OUTPUTFILE', 'file name to output result HTML', ' --output=OUTPUTFILE', 'file name to output result HTML') {|v| options[:output] = v}
+
+opt.parse! ARGV
+processed = CSSInliner.process File.read(ARGV[0]), File.dirname(ARGV[0])
+
+if options[:output]
+  File.open(options[:output], 'w') {|f| f.write processed}
+else
+  $stdout.write processed
+end
+
+exit 0
