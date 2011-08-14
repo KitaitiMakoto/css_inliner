@@ -1,13 +1,9 @@
-gem 'test-unit'
-require 'test/unit'
+require_relative 'test_helper'
 require 'css_inliner'
 
 class CSSInlinerTest < Test::Unit::TestCase
   def setup
     @fixtures_dir = File.join(File.dirname(__FILE__), 'fixtures')
-    @basedir = File.join(File.dirname(__FILE__), 'fixtures', 'sample1')
-    @source = File.read(File.join(@basedir, 'index.html'))
-    @inlined = File.read(File.join(@basedir, 'index.inlined.html'))
   end
 
   def test_process_without_inline_style
