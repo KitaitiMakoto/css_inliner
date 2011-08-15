@@ -1,5 +1,6 @@
 #!/usr/local/bin/ruby
 require 'optparse'
+require 'fileutils'
 require 'css_inliner'
 
 opt = OptionParser.new
@@ -7,11 +8,18 @@ Version = CSSInliner::VERSION
 options = {}
 
 opt.on('-o', '--output=OUTPUTFILE', 'file name to output result HTML') {|v| options[:output] = v}
+opt.on('-i [SUFFIX]', '--in-place', '--overwrite', 'inplace editing') do |v|
+  options[:'in-place'] = true
+  options[:suffix] = v
+end
+opt.on('-e ELEMENT', '--element', 'element name to extract as root') {|v| options[:element] = v}
 
 opt.parse! ARGV
-processed = CSSInliner.process File.read(ARGV[0]), File.dirname(ARGV[0])
-
-if options[:output]
+processed = CSSInliner.process File.read(ARGV[0]), File.dirname(ARGV[0]), options[:element]
+if options[:'in-place']
+  FileUtils.cp(ARGV[0], ARGV[0] + options[:suffix]) if options[:suffix]
+  File.open(ARGV[0], 'w') {|f| f.write processed}
+elsif options[:output]
   File.open(options[:output], 'w') {|f| f.write processed}
 else
   $stdout.write processed

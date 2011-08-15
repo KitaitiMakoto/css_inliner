@@ -12,7 +12,7 @@ opt.on('-i [SUFFIX]', '--in-place', '--overwrite', 'inplace editing') do |v|
   options[:'in-place'] = true
   options[:suffix] = v
 end
-opt.on('-e ELEMENT', '--element', 'root element') {|v| options[:element] = v}
+opt.on('-e ELEMENT', '--element', 'element name to extract as root') {|v| options[:element] = v}
 
 opt.parse! ARGV
 ARGV.each do |file|
