@@ -1,4 +1,3 @@
-#!/usr/local/bin/ruby
 require 'optparse'
 require 'fileutils'
 require 'css_inliner'
