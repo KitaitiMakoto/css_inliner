@@ -3,10 +3,10 @@ require 'css_parser'
 
 module CSSInliner
   class Extractor
-    attr_reader :document, :basedir
+    attr_reader :document
 
-    def initialize(document, basedir)
-      @document, @basedir = document, basedir
+    def initialize(document, directory)
+      @document, @basedir = document, directory
     end
 
     def extract(remove_link_and_style = true)
@@ -38,12 +38,14 @@ module CSSInliner
 
     def integrate!(sources)
       parser = CssParser::Parser.new
-      sources.each {|css| parser.add_block! css}
-      selectors = parser.enum_for :each_selector
+      parser.add_block!(sources * $/)
+      rule_sets = parser.enum_for :each_rule_set
       i = 0
-      selectors = selectors.sort_by {|sel, dec, spec| [spec, i += 1]}
-      selectors.inject(Hash.new(CssParser::RuleSet.new(nil, nil))) do |rules, (sel, dec, spec)|
-        rules[sel] = CssParser.merge rules[sel], CssParser::RuleSet.new(sel, dec)
+      rule_sets = rule_sets.sort_by {|rs| [rs.specificity, i += 1]}
+      blank_rule_set = CssParser::RuleSet.new(nil, nil)
+      rule_sets.inject(Hash.new(blank_rule_set)) do |rules, rs|
+        sel = rs.selectors * ','
+        rules[sel] = CssParser.merge rules[sel], rs
         rules
       end
     end
