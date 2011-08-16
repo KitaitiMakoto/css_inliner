@@ -1,13 +1,13 @@
 require 'rubygems'
 require 'nokogiri'
-require 'css_inliner/integrator'
+require 'css_inliner/extractor'
 
 module CSSInliner
   class Inliner
     def initialize(html, basedir)
       @document = Nokogiri.HTML html
       @basedir = basedir
-      @integrator = Integrator.new @document, @basedir
+      @extractor = Extractor.new @document, @basedir
     end
 
     def inline
@@ -17,12 +17,12 @@ module CSSInliner
       end
 
       styles = {}
-      @integrator.integrate.each_pair do |sel, rule_set|
+      @extractor.extract.each_pair do |sel, rs|
         next if sel =~ /@|:/
         body = @document.css('body')
         body.css(sel).each_with_index do |elem, i|
           styles[elem] = CssParser::RuleSet.new(nil, nil) unless styles[elem]
-          styles[elem] = CssParser.merge styles[elem], rule_set
+          styles[elem] = CssParser.merge styles[elem], rs
         end
       end
 
