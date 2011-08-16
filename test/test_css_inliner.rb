@@ -1,19 +1,17 @@
 require_relative 'helper'
 require 'css_inliner'
 
-class CSSInlinerTest < Test::Unit::TestCase
+class CSSInlinerTest < CSSInlinerTestCase
   def setup
-    @fixtures_dir = File.join(File.dirname(__FILE__), 'fixtures')
+    super
   end
 
   def test_process_without_inline_style
-    basedir = File.join(@fixtures_dir, 'sample1')
-    assert_equal *process(basedir)
+    assert_equal *process(@sample1_dir)
   end
 
   def test_process_with_inline_style
-    basedir = File.join(@fixtures_dir, 'sample2')
-    assert_equal *process(basedir)
+    assert_equal *process(@sample2_dir)
   end
 
   def process(basedir)
