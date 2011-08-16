@@ -2,18 +2,19 @@ require 'rake/testtask'
 require 'yard'
 require "bundler/gem_tasks"
 
-task :default => ['test:all']
+task :default => [:test]
 
-namespace :test do
-  task :all => [:test, :report]
+Rake::TestTask.new
+YARD::Rake::YardocTask.new
 
-  Rake::TestTask.new
-
-  desc 'Generate coverage report'
+desc "Generates and opens code coverage report."
+namespace :cover_me do
   task :report do
     require 'cover_me'
     CoverMe.complete!
   end
 end
 
-YARD::Rake::YardocTask.new
+task :test do
+  Rake::Task['cover_me:report'].invoke
+end
