@@ -13,7 +13,7 @@ module CSSInliner
       sources = []
       sources.concat extract_from_link(remove_link_and_style)
       sources.concat extract_from_style(remove_link_and_style)
-      integrate! sources
+      integrate sources
     end
 
     def extract_from_link(remove_link_element = true)
@@ -36,7 +36,7 @@ module CSSInliner
       end
     end
 
-    def integrate!(sources)
+    def integrate(sources)
       parser = CssParser::Parser.new
       parser.add_block!(sources * $/)
       rule_sets = parser.enum_for :each_rule_set
