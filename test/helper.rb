@@ -3,8 +3,6 @@ gem 'test-unit'
 require 'test/unit'
 require 'css_inliner'
 
-CoverMe.complete!
-
 class CSSInlinerTestCase < Test::Unit::TestCase
   include CSSInliner
 
