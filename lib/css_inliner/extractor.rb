@@ -36,7 +36,7 @@ module CSSInliner
       end
     end
 
-    def integrate(sources)
+    def integrate(*sources)
       parser = CssParser::Parser.new
       parser.add_block!(sources * $/)
       rule_sets = parser.enum_for :each_rule_set
