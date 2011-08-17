@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version     = CSSInliner::VERSION
   s.authors     = ["KITAITI Makoto"]
   s.email       = ["KitaitiMakoto@gmail.com"]
-  s.homepage    = "https://gitorious.org/css_inliner"
+  s.homepage    = "http://gitorious.org/css_inliner"
   s.summary     = %q{inline CSS into HTML attribute of elements}
   s.description = %q{
     inline CSS from external file(s) and/or style elment(s) in head element
