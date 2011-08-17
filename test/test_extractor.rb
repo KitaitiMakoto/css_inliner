@@ -7,6 +7,7 @@ class ExtractorTest < CSSInlinerTestCase
     @extractor1 = Extractor.new @doc1, @sample1_dir
     @extractor2 = Extractor.new @doc2, @sample2_dir
     @extractor3 = Extractor.new @doc3, @sample3_dir
+    @extractor4 = Extractor.new @doc4, @sample4_dir
   end
 
   def test_extract_from_link_basic
