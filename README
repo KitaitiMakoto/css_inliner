@@ -1,0 +1,12 @@
+CSS Inliner
+
+CSS Inliner is a command-line tool to inline CSS into style attributes of each HTML element.
+
+INSTALL
+
+USAGE
+
+css-inliner
+
+
+css-inliner-multifile
