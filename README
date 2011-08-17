@@ -1,12 +1,46 @@
-CSS Inliner
+= CSS Inliner
+CSS Inliner is a command-line tools to inline CSS into style attribute of each HTML element.
 
-CSS Inliner is a command-line tool to inline CSS into style attributes of each HTML element.
+= INSTALL
+== As a RubyGem
+ $ gem install css_inliner
 
-INSTALL
+== From Repository
+ $ git clone git://gitorious.org/css_inliner/css_inliner.git
+ $ cd css_inliner
+ $ rake install
 
-USAGE
+= USAGE
+== As Command-Line Tools
+Note that options are not stable.
+=== css-inliner
+ $ css-inliner --help
 
-css-inliner
+ $ css-inliner file1.html(output to stdout)
+ $ css-inliner file2.html --output=result2.html 
+ $ css-inliner file3.html > result3.html
+ $ css-inliner file4.html --element body(output only body element)
+ $ css-inliner file5.html --in-place(overwrite result to file5.html)
+ $ css-inliner file5.html --in-place=.bak(create a backup file as file5.html.bak)
 
+=== css-inliner-multifile
+ $  css-inliner --help
 
-css-inliner-multifile
+ $  css-inliner-multifile ./dir1/*.html(output all result to standard output)
+ $  css-inliner-multifile ./dir2/*.html --dir=./resultdir
+ $  css-inliner-multifile ./dir3/*.html --element=body
+ $  css-inliner-multifile ./dir4/*.html --in-place=.bak
+
+== As a Library
+Not stable. Wait please.
+
+== Note
+Note that
+ <link rel="stylesheet" href="...">
+and
+ <style type="text/css"> ... </style>
+will be removed in process.
+
+= LICENSE
+CSS Inliner is copyright (c) 2011 KITAITI Makoto.
+Distribued under the MIT license, see LISENCE file for the term.
