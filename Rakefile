@@ -10,8 +10,11 @@ YARD::Rake::YardocTask.new
 desc "Generates and opens code coverage report."
 namespace :cover_me do
   task :report do
-    require 'cover_me'
-    CoverMe.complete!
+    begin
+      require 'cover_me'
+      CoverMe.complete!
+    rescue LoadError
+    end
   end
 end
 
