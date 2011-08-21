@@ -2,17 +2,26 @@ require 'rake/testtask'
 require 'yard'
 require "bundler/gem_tasks"
 
-task :default => [:test]
+task :default => ['coverage:console']
 
 Rake::TestTask.new
 YARD::Rake::YardocTask.new
 
-desc "Generates and opens code coverage report."
-namespace :cover_me do
-  task :report => :test do
+namespace :coverage do
+  desc "Generates and outputs code coverage report."
+  task :console => :test do
     require 'cover_me'
     CoverMe.config do |conf|
-      conf.at_exit = proc {`opera coverage/index.html`}
+      conf.formatter = CoverMe::ConsoleFormatter
+    end
+    CoverMe.complete!
+  end
+
+  desc "Generates and opens code coverage report."
+  task :html => :test do
+    require 'cover_me'
+    CoverMe.config do |conf|
+      conf.formatter = CoverMe::HtmlFormatter
     end
     CoverMe.complete!
   end

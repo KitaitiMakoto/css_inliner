@@ -21,7 +21,7 @@ module CSSInliner
         begin
           open(File.join(basedir, link['href'])) {|f| sources << f.read}
         rescue Errno::ENOENT
-          warn File.join(basedir, link['href']) + 'not found'
+          warn File.join(basedir, link['href']) + ' not found'
         end
         link.remove if remove_link_element
         sources

@@ -14,6 +14,14 @@ class CSSInlinerTest < CSSInlinerTestCase
     assert_equal *process(@sample2_dir)
   end
 
+  def test_process_with_style_attribute
+    assert_equal *process(@sample3_dir)
+  end
+
+  def test_process_with_inline_style_and_style_attibute
+    assert_equal *process(@sample4_dir)
+  end
+
   def process(basedir)
     source = File.read(File.join(basedir, 'index.html'))
     inlined = File.read(File.join(basedir, 'index.inlined.html'))

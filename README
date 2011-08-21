@@ -19,8 +19,8 @@ Note that options are not stable.
  $ css-inliner file1.html(output to stdout)
  $ css-inliner file2.html --output=result2.html 
  $ css-inliner file3.html > result3.html
- $ css-inliner file4.html --element body(output only body element)
- $ css-inliner file5.html --in-place(overwrite result to file5.html)
+ $ css-inliner file4.html --element=body(output only body element)
+ $ css-inliner file5.html --in-place(overwrite file5.html)
  $ css-inliner file5.html --in-place=.bak(create a backup file as file5.html.bak)
 
 === css-inliner-multifile
