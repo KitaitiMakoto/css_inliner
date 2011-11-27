@@ -51,4 +51,29 @@ class ExtractorTest < CSSInlinerTestCase
     @extractor3.extract_from_style(false)
     assert_equal expected, @doc3.css('style').to_s
   end
+
+  def test_integrate_basic
+    sources = [
+      '
+h2 {
+  color: gray;
+}',
+'
+h2 p {
+  color: blue;
+}
+',
+'
+a {
+  text-decoration: none;
+}
+'
+    ]
+    expected = {
+      'h2'   => CssParser::RuleSet.new(nil, 'color: gray;'),
+      'a'    => CssParser::RuleSet.new(nil, 'text-decoration: none;'),
+      'h2 p' => CssParser::RuleSet.new(nil, 'color:blue')
+    }
+    assert_equal expected.to_s, @extractor1.integrate(sources).to_s
+  end
 end
