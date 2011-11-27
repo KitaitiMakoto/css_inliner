@@ -26,4 +26,5 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "test-unit", '~> 2'
   s.add_development_dependency "cover_me", '~> 1'
+  s.add_development_dependency "yard"
 end
