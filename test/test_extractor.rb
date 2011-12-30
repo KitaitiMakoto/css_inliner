@@ -71,8 +71,8 @@ a {
     ]
     expected = {
       'h2'   => CssParser::RuleSet.new(nil, 'color: gray;'),
-      'a'    => CssParser::RuleSet.new(nil, 'text-decoration: none;'),
-      'h2 p' => CssParser::RuleSet.new(nil, 'color:blue')
+      'h2 p' => CssParser::RuleSet.new(nil, 'color:blue'),
+      'a'    => CssParser::RuleSet.new(nil, 'text-decoration: none;')
     }
     assert_equal expected.to_s, @extractor1.integrate(sources).to_s
   end
