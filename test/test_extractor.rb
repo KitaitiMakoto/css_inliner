@@ -1,7 +1,7 @@
 require_relative 'helper'
 require 'nokogiri'
 
-class ExtractorTest < CSSInlinerTestCase
+class TestExtractor < CSSInlinerTestCase
   def setup
     super
     @extractor1 = Extractor.new @doc1, @sample1_dir
