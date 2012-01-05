@@ -1,6 +1,32 @@
 = CSS Inliner
 CSS Inliner is a command-line tools to inline CSS into style attribute of each HTML element.
 
+HTML here...
+
+ <html>
+   <head>
+     <title>Sample HTML</title>
+     <style type="text/css">
+       body {color: black;}
+       p {line-height: 2em;}
+     </style>
+   </head>
+   <body>
+     <p>This is sample HTML document. In this paragraph, text is black and line has double height of font size.</p>
+   </body>
+ </html>
+
+... becomes like this:
+
+ <html>
+   <head>
+     <title>Sample HTML</title>
+   </head>
+   <body style="color: black;">
+     <p style="line-height: 2em;">This is sample HTML document. In paragraph, text is black and line height is twice of font size.</p>
+   </body>
+ </html>
+
 = INSTALL
 == As a RubyGem
  $ gem install css_inliner
@@ -17,11 +43,11 @@ Note that options are not stable.
  $ css-inliner --help
 
  $ css-inliner file1.html(output to stdout)
- $ css-inliner file2.html --output=result2.html 
- $ css-inliner file3.html > result3.html
+ $ css-inliner file2.html > result2.html
+ $ css-inliner file3.html --output=result3.html
  $ css-inliner file4.html --element=body(output only body element)
  $ css-inliner file5.html --in-place(overwrite file5.html)
- $ css-inliner file5.html --in-place=.bak(create a backup file as file5.html.bak)
+ $ css-inliner file6.html --in-place=.bak(create a backup file as file6.html.bak)
 
 === css-inliner-multifile
  $  css-inliner --help
@@ -32,7 +58,16 @@ Note that options are not stable.
  $  css-inliner-multifile ./dir4/*.html --in-place=.bak
 
 == As a Library
-Not stable. Wait please.
+Note that this is <b>not stable at all</b>.
+
+ require 'css_inliner'
+
+ html = File.read(sample.html)
+
+ CSSInliner.process html, '.' # => CSS-inlined HTML
+ CSSInliner.process html, '.', 'body' # => body element(<body> ... </body>)
+ CSSInliner.process html, '.', 'article' # => The first article element
+ CSSInliner.process html, 'http://example.net/stylesheets' # Passed URI will be used as base directory when resolving relative URI of CSS
 
 == Note
 Note that
