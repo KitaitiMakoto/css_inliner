@@ -4,8 +4,10 @@ require 'css_inliner/extractor'
 
 module CSSInliner
   class Inliner
-    def initialize(html, basedir)
-      @document = Nokogiri.HTML html
+    # @param [Nokogiri::XML::Document] document
+    # @param [String] basedir
+    def initialize(document, basedir)
+      @document = document
       @basedir = basedir
       @extractor = Extractor.new @document, @basedir
     end
