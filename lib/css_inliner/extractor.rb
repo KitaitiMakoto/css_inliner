@@ -1,7 +1,42 @@
+require 'English'
 require 'open-uri'
-require 'css_parser'
+require 'bsearch'
+require 'csspool'
 
 module CSSInliner
+  class CSSDocument < CSSPool::CSS::Document
+    # [
+    #   {specificity: int, selectors: [selector, selector, ...]},
+    #   {specificity: int, selectors: [selector, selector, ...]},
+    #   # ...
+    # ]
+    attr_accessor :specificity_index
+
+    def initialize
+      super
+      @specificity_index = []
+    end
+  end
+
+  class CSSDocumentHandler < CSSPool::CSS::DocumentHandler
+    def start_document
+      @document = CSSDocument.new
+    end
+
+    def start_selector selector_list
+      super
+      selector_list.each do |selector|
+        index = @document.specificity_index.bsearch { |idx|
+          idx[:specificity] <=> selector.specificity
+        } || @document.specificity_index.bsearch_upper_boundary { |idx|
+          idx[:specificity] <=> selector.specificity
+        }
+        @document.specificity_index[index] ||= {specificity: selector.specificity, selectors: []}
+        @document.specificity_index[index][:selectors] << selector
+      end
+    end
+  end
+
   class Extractor
     attr_reader :document
 
@@ -17,9 +52,11 @@ module CSSInliner
     end
 
     def extract_from_link(remove_link_element = true)
-      @document.css('link[rel="stylesheet"]').inject([]) do |sources, link|
+      @document.css('link').inject([]) do |sources, link|
+        next unless link['rel'] == 'stylesheet'
         begin
-          open(File.join(basedir, link['href'])) {|f| sources << f.read}
+          # To do: detect file encoding before open it(read only @charset value)
+          open(File.join(basedir, link['href']), 'r:BOM|UTF-8') {|f| sources << f.read}
         rescue Errno::ENOENT
           warn File.join(basedir, link['href']) + ' not found'
         end
@@ -37,22 +74,21 @@ module CSSInliner
     end
 
     def integrate(*sources)
-      parser = CssParser::Parser.new
-      parser.add_block!(sources * $/)
-      rule_sets = parser.enum_for :each_rule_set
-      i = 0
-      rule_sets = rule_sets.sort_by {|rs| [rs.specificity, i += 1]}
-      blank_rule_set = CssParser::RuleSet.new(nil, nil)
-      rule_sets.inject(Hash.new(blank_rule_set)) do |rules, rs|
-        sel = rs.selectors * ','
-        rules[sel] = CssParser.merge rules[sel], rs
-        rules
-      end
+      source = sources.collect {|src| src * $RS}.join($RS)
+      handler = CSSDocumentHandler.new
+      css = CSSPool::SAC::Parser.new(handler).parse(source)
     end
 
     def basedir
       base = @document.css('base')
       base.empty? ? @basedir : base[0]['href']
+    end
+
+    private
+
+    # To do: reimplement properly and then redifine under CSSPool name space
+    def merge_declarations(base, new)
+      new
     end
   end
 end
