@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'nokogiri'
+require 'csspool'
 require 'css_inliner/extractor'
 
 module CSSInliner
@@ -13,29 +14,16 @@ module CSSInliner
     end
 
     def inline
-      original_style = {}
-      @document.css('*[style]').each do |elem|
-        original_style[elem] = elem['style']
-      end
-
-      styles = {}
-      @extractor.extract.each_pair do |sel, rs|
+      css = @extractor.extract
+      css.specificity_index.each do |selector|
+        sel = selector.to_s
         next if sel =~ /@|:/
         body = @document.css('body')
-        body.css(sel).each_with_index do |elem, i|
-          styles[elem] = CssParser::RuleSet.new(nil, nil) unless styles[elem]
-          styles[elem] = CssParser.merge styles[elem], rs
+        body.css(sel).each do |elem|
+          elem = body.css('body').first if elem.name == 'html'
+          next unless elem
+          elem['style'] = "#{selector.declarations.join}#{elem['style']}"
         end
-      end
-
-      original_style.each_pair do |elem, style|
-        styles[elem] = CssParser::RuleSet.new(nil, nil) unless styles[elem]
-        rs = CssParser::RuleSet.new(nil, style)
-        styles[elem] = CssParser.merge styles[elem], rs
-      end
-
-      styles.each_pair do |elem, rule_set|
-        elem['style'] = rule_set.declarations_to_s
       end
 
       @document
