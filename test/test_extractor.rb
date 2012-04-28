@@ -51,8 +51,6 @@ class TestExtractor < CSSInlinerTestCase
   end
 
   def test_integrate_basic
-    pend
-
     sources = [
       '
 h2 {
@@ -69,11 +67,17 @@ a {
 }
 '
     ]
-    expected = {
-      'h2'   => 'color: gray;',
-      'h2 p' => 'color:blue',
-      'a'    => 'text-decoration: none;'
-    }
-    assert_equal expected.to_s, @extractor1.integrate(sources).to_css
+    expected = <<EOC
+h2 {
+  color: gray;
+}
+h2 p {
+  color: blue;
+}
+a {
+  text-decoration: none;
+}
+EOC
+    assert_equal expected.chomp, @extractor1.integrate(sources).to_css.chomp
   end
 end

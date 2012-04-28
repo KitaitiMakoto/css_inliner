@@ -22,6 +22,7 @@ module CSSInliner
         body.css(sel).each do |elem|
           elem = body.css('body').first if elem.name == 'html'
           next unless elem
+          # To to: implement Declaration#merge and calc performance
           elem['style'] = "#{selector.declarations.join}#{elem['style']}"
         end
       end

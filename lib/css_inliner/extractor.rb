@@ -3,6 +3,10 @@ require 'open-uri'
 require 'bsearch'
 require 'csspool'
 
+class CSSPool::Visitors::ToCSS
+  alias visit_CSSInliner_CSSDocument visit_CSSPool_CSS_Document
+end
+
 module CSSInliner
   class CSSDocument < CSSPool::CSS::Document
     # Descending order
