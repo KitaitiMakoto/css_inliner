@@ -5,10 +5,12 @@ require 'csspool'
 
 module CSSInliner
   class CSSDocument < CSSPool::CSS::Document
+    # Descending order
     # [
-    #   {specificity: int, selectors: [selector, selector, ...]},
-    #   {specificity: int, selectors: [selector, selector, ...]},
-    #   # ...
+    #   {specificity: [2,1,4], selectors: [selector, selector, ...]},
+    #   {specificity: [2,1,3], selectors: [selector, selector, ...]},
+    #   #                :
+    #   #                :
     # ]
     attr_accessor :specificity_index
 
@@ -26,13 +28,10 @@ module CSSInliner
     def start_selector selector_list
       super
       selector_list.each do |selector|
-        index = @document.specificity_index.bsearch { |idx|
-          idx[:specificity] <=> selector.specificity
-        } || @document.specificity_index.bsearch_upper_boundary { |idx|
-          idx[:specificity] <=> selector.specificity
+        index = @document.specificity_index.bsearch_lower_boundary { |existing|
+          selector.specificity <=> existing.specificity
         }
-        @document.specificity_index[index] ||= {specificity: selector.specificity, selectors: []}
-        @document.specificity_index[index][:selectors] << selector
+        @document.specificity_index.insert index, selector
       end
     end
   end
