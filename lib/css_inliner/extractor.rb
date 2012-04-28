@@ -76,7 +76,7 @@ module CSSInliner
       source = sources.collect {|src| src * $RS}.join($RS)
       source = 'book {}' if source.empty?
       handler = CSSDocumentHandler.new
-      css = CSSPool::SAC::Parser.new(handler).parse(source)
+      CSSPool::SAC::Parser.new(handler).parse(source)
     end
 
     def basedir
