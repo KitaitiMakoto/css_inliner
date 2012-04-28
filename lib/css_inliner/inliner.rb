@@ -15,7 +15,7 @@ module CSSInliner
 
     def inline
       css = @extractor.extract
-      css.specificity_index.each do |selector|
+      css.specificity_index.reverse_each do |selector|
         sel = selector.to_s
         next if sel =~ /@|:/
         body = @document.css('body')

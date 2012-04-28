@@ -28,8 +28,8 @@ module CSSInliner
     def start_selector selector_list
       super
       selector_list.each do |selector|
-        index = @document.specificity_index.bsearch_lower_boundary { |existing|
-          selector.specificity <=> existing.specificity
+        index = @document.specificity_index.bsearch_upper_boundary { |existing|
+          existing.specificity <=> selector.specificity
         }
         @document.specificity_index.insert index, selector
       end
