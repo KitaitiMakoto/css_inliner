@@ -24,5 +24,3 @@ elsif options[:output]
 else
   $stdout.write processed
 end
-
-exit 0
