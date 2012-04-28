@@ -2,6 +2,7 @@ require 'open-uri'
 require 'rubygems'
 require 'nokogiri'
 require 'css_inliner/version'
+require 'css_inliner/csspool'
 require 'css_inliner/inliner'
 
 module CSSInliner

@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'nokogiri'
-require 'csspool'
 require 'css_inliner/extractor'
+require 'css_inliner/csspool'
 
 module CSSInliner
   class Inliner

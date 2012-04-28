@@ -1,11 +1,7 @@
 require 'English'
 require 'open-uri'
 require 'bsearch'
-require 'csspool'
-
-class CSSPool::Visitors::ToCSS
-  alias visit_CSSInliner_CSSDocument visit_CSSPool_CSS_Document
-end
+require 'css_inliner/csspool'
 
 module CSSInliner
   class CSSDocument < CSSPool::CSS::Document
