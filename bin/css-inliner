@@ -6,6 +6,7 @@ opt = OptionParser.new
 Version = CSSInliner::VERSION
 options = {}
 
+opt.banner = "Usage: #{File.basename($PROGRAM_NAME)} [options] htmlfile"
 opt.on('-o', '--output=OUTPUTFILE', 'file name to output result HTML') {|v| options[:output] = v}
 opt.on('-i [SUFFIX]', '--in-place', '--overwrite', 'inplace editing') do |v|
   options[:'in-place'] = true
