@@ -12,8 +12,8 @@ module CSSInliner
     #   Returns whole document when nil
     # @return [String] HTML source
     def process(html, basedir = '.', element = nil)
-      doc = html.instance_of? Nokogiri::XML::Document ? html : Nokogiri.HTML(html)
-      doc = Inliner.new(html, basedir).inline
+      doc = html.instance_of?(Nokogiri::XML::Document) ? html : Nokogiri.XML(html)
+      doc = Inliner.new(doc, basedir).inline
       doc = doc.css(element)[0] if element
       doc.to_s
     end
