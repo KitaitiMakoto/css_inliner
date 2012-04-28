@@ -74,6 +74,7 @@ module CSSInliner
 
     def integrate(*sources)
       source = sources.collect {|src| src * $RS}.join($RS)
+      source = 'book {}' if source.empty?
       handler = CSSDocumentHandler.new
       css = CSSPool::SAC::Parser.new(handler).parse(source)
     end
@@ -81,13 +82,6 @@ module CSSInliner
     def basedir
       base = @document.css('base')
       base.empty? ? @basedir : base[0]['href']
-    end
-
-    private
-
-    # To do: reimplement properly and then redifine under CSSPool name space
-    def merge_declarations(base, new)
-      new
     end
   end
 end
