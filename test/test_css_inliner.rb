@@ -7,6 +7,8 @@ class CSSInlinerTest < CSSInlinerTestCase
   end
 
   def test_process_without_inline_style
+    pend
+
     assert_equal *process(@sample1_dir)
   end
 
