@@ -36,17 +36,6 @@ module CSSInliner
         orig = CSSPool.CSS("* {#{style}}").rule_sets.first.declarations
         elem['style'] = CSSPool::CSS.update_declarations(base, orig).join
       end
-      # css.sorted_selectors.reverse_each do |selector|
-      #   sel = selector.to_s
-      #   next if sel =~ /@|:/
-      #   body = @document.css('body')
-      #   body.css(sel).each do |elem|
-      #     elem = body.css('body').first if elem.name == 'html'
-      #     next unless elem
-      #     # To to: implement Declaration#merge and calc performance
-      #     elem['style'] = "#{selector.declarations.join}#{elem['style']}"
-      #   end
-      # end
 
       @document
     end
