@@ -7,8 +7,6 @@ class CSSInlinerTest < CSSInlinerTestCase
   end
 
   def test_process_without_inline_style
-    pend
-
     assert_equal *process(@sample1_dir)
   end
 
@@ -31,8 +29,6 @@ class CSSInlinerTest < CSSInlinerTestCase
   end
 
   def process(basedir)
-    pend
-
     source = File.read(File.join(basedir, 'index.html'))
     inlined = File.read(File.join(basedir, 'index.inlined.html'))
     [inlined, CSSInliner.process(source, basedir)]
