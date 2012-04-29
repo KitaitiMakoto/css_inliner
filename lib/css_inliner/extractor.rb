@@ -6,11 +6,11 @@ require 'css_inliner/csspool'
 module CSSInliner
   class CSSDocument < CSSPool::CSS::Document
     # @return [Array<CSSPool::Selector>] Array of selectors in specificity order
-    attr_reader :ordered_selectors
+    attr_reader :sorted_selectors
 
     def initialize
       super
-      @ordered_selectors = []
+      @sorted_selectors = []
     end
   end
 
@@ -22,10 +22,10 @@ module CSSInliner
     def start_selector selector_list
       super
       selector_list.each do |selector|
-        index = @document.ordered_selectors.bsearch_upper_boundary { |existing|
+        index = @document.sorted_selectors.bsearch_upper_boundary { |existing|
           existing.specificity <=> selector.specificity
         }
-        @document.ordered_selectors.insert index, selector
+        @document.sorted_selectors.insert index, selector
       end
     end
   end

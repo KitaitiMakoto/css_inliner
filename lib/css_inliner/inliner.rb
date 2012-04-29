@@ -21,7 +21,7 @@ module CSSInliner
       end
 
       css = @extractor.extract
-      css.ordered_selectors.each do |selector|
+      css.sorted_selectors.each do |selector|
         sel = selector.to_s
         next if sel =~ /@|:/
         sel = 'body' if sel == '*' or sel == 'html'
@@ -36,7 +36,7 @@ module CSSInliner
         orig = CSSPool.CSS("* {#{style}}").rule_sets.first.declarations
         elem['style'] = CSSPool::CSS.update_declarations(base, orig).join
       end
-      # css.ordered_selectors.reverse_each do |selector|
+      # css.sorted_selectors.reverse_each do |selector|
       #   sel = selector.to_s
       #   next if sel =~ /@|:/
       #   body = @document.css('body')
