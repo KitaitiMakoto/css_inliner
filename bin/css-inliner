@@ -4,10 +4,11 @@ require 'css_inliner'
 
 opt = OptionParser.new
 Version = CSSInliner::VERSION
-options = {}
+options = {format: 'html'}
 
 opt.banner = "Usage: #{File.basename($PROGRAM_NAME)} [options] htmlfile"
 opt.on('-o', '--output=OUTPUTFILE', 'file name to output result HTML') {|v| options[:output] = v}
+opt.on('-f', '--format=FORMAT', 'format to output("html", "xhtml" or "xml")', %w[html xhtml xml]) {|v| options[:format] = v}
 opt.on('-i [SUFFIX]', '--in-place', '--overwrite', 'inplace editing') do |v|
   options[:'in-place'] = true
   options[:suffix] = v
@@ -15,7 +16,7 @@ end
 opt.on('-e ELEMENT', '--element', 'element name to extract as root') {|v| options[:element] = v}
 
 opt.parse! ARGV
-processed = CSSInliner.process File.read(ARGV[0]), File.dirname(ARGV[0]), options[:element]
+processed = CSSInliner.process File.read(ARGV[0]), File.dirname(ARGV[0]), options[:element], options[:format]
 if options[:'in-place']
   FileUtils.cp(ARGV[0], ARGV[0] + options[:suffix]) if options[:suffix]
   File.open(ARGV[0], 'w') {|f| f.write processed}

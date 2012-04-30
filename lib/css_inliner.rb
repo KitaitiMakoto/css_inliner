@@ -11,12 +11,22 @@ module CSSInliner
     # @param [String] basedir Base directory or URI to traverse relative URI for images
     # @param [String] element Element name to be returned.
     #   Returns whole document when nil
+    # @param [String] format Format to output, html or xhtml
     # @return [String] HTML source
-    def process(html, basedir = '.', element = nil)
+    def process(html, basedir = '.', element = nil, format = 'html')
       doc = html.instance_of?(Nokogiri::XML::Document) ? html : Nokogiri.XML(html)
       doc = Inliner.new(doc, basedir).inline
       doc = doc.css(element)[0] if element
-      doc.to_s
+      case format
+      when 'xhtml'
+        doc.to_xhtml
+      when 'html'
+        doc.to_html
+      when 'xml'
+        doc.to_xml
+      else
+        doc.to_s
+      end
     end
   end
 end
