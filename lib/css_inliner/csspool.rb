@@ -13,7 +13,7 @@ module CSSPool
           if base_decls.empty?
             base << other_decl
           else
-            base_decl = base_decls.pop
+            base_decl = base_decls.shift
             base_decls.each do |decl|
               base_decl.update decl
             end
