@@ -36,6 +36,7 @@ module CSSPool
       class InvalidExpressionCountError < StandardError; end
 
       DIMENSIONS = %w[top right bottom left]
+      # property => property of [top, right, bottom, left]
       PROPERTY_EXPANSION = {}
       %w[margin padding].each do |prop|
         PROPERTY_EXPANSION[prop] = DIMENSIONS.map {|dim| "#{prop}-#{dim}"}
@@ -43,6 +44,13 @@ module CSSPool
       %w[color style width].each do |subprop|
         PROPERTY_EXPANSION["border-#{subprop}"] = DIMENSIONS.map {|dim| "border-#{dim}-#{subprop}"}
       end
+      # count of expressions => index of [top, right, bottom, left]
+      EXPANSION_INDICES = {
+        1 => [0, 0, 0, 0],
+        2 => [0, 1, 0, 1],
+        3 => [0, 1, 2, 1],
+        4 => [0, 1, 2, 3]
+      }
 
       # @param [Declaration] other
       # @return [Declaration] self
@@ -61,23 +69,15 @@ module CSSPool
 
       # @return [Array<Declaration>] array of declaration indicating four dimensions
       def expand_dimension
-        return [self] unless PROPERTY_EXPANSION.keys.include? property
+        expanded_properties = PROPERTY_EXPANSION[property]
+        return [self] unless expanded_properties
 
-        expanded = case expressions.length
-                   when 4
-                     expressions
-                   when 3
-                     [expressions[0], expressions[1], expressions[2], expressions[1]]
-                   when 2
-                     [expressions[0], expressions[1], expressions[0], expressions[1]]
-                   when 1
-                     [expressions[0], expressions[0], expressions[0], expressions[0]]
-                   else
-                     raise InvalidExpressionCountError, "has #{expressions.length} properties"
-                   end
+        expansion_map = EXPANSION_INDICES[expressions.length]
+        raise InvalidExpressionCountError, "has #{expressions.length} properties" unless expansion_map
 
-        PROPERTY_EXPANSION[property.to_s].each.with_index.map {|prop, i|
-          Declaration.new(prop, expanded[i], important, rule_set)
+        expanded_properties.each.with_index.map {|prop, i|
+          expression = expressions[expansion_map[i]]
+          Declaration.new(prop, expression, important, rule_set)
         }
       end
     end
