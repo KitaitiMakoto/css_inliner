@@ -37,7 +37,19 @@ EOC
   end
 
   def test_non_dimension_expandable
-    assert false
+    no_dimension = CSSPool.CSS <<EOC
+p {
+  color: blue;
+}
+EOC
+    expected = CSSPool.CSS <<EOC
+p {
+  color: blue;
+}
+EOC
+
+    assert_equal expected.rule_sets.first.declarations.to_s,
+                 no_dimension.rule_sets.first.declarations.first.expand_dimension.to_s
   end
 
   def test_expand_five_dimensions
