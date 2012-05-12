@@ -33,6 +33,17 @@ module CSSPool
     end
 
     class Declaration
+      class InvalidExpressionCountError < StandardError; end
+
+      DIMENSIONS = %w[top right bottom left]
+      PROPERTY_EXPANSION = {}
+      %w[margin padding].each do |prop|
+        PROPERTY_EXPANSION[prop] = DIMENSIONS.map {|dim| "#{prop}-#{dim}"}
+      end
+      %w[color style width].each do |subprop|
+        PROPERTY_EXPANSION["border-#{subprop}"] = DIMENSIONS.map {|dim| "border-#{dim}-#{subprop}"}
+      end
+
       # @param [Declaration] other
       # @return [Declaration] self
       def update(other)
@@ -46,6 +57,28 @@ module CSSPool
       # @return [Declaration] merged declaration
       def merge(other)
         dup.update other
+      end
+
+      # @return [Array<Declaration>] array of declaration indicating four dimensions
+      def expand_dimension
+        return [self] unless PROPERTY_EXPANSION.keys.include? property
+
+        expanded = case expressions.length
+                   when 4
+                     expressions
+                   when 3
+                     [expressions[0], expressions[1], expressions[2], expressions[1]]
+                   when 2
+                     [expressions[0], expressions[1], expressions[0], expressions[1]]
+                   when 1
+                     [expressions[0], expressions[0], expressions[0], expressions[0]]
+                   else
+                     raise InvalidExpressionCountError, "has #{expressions.length} properties"
+                   end
+
+        PROPERTY_EXPANSION[property.to_s].each.with_index.map {|prop, i|
+          Declaration.new(prop, expanded[i], important, rule_set)
+        }
       end
     end
   end
