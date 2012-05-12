@@ -47,7 +47,7 @@ module CSSPool
       # @param [Declaration] other
       # @return [Declaration] self
       def update(other)
-        raise ArgumentError('different property') unless property == other.property
+        raise ArgumentError, 'different property' unless property == other.property
         self.expressions = other.expressions if !important? or other.important?
         self
       end
