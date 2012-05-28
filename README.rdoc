@@ -69,6 +69,11 @@ Note that this is <b>not stable at all</b>.
  CSSInliner.process html, '.', 'article' # => The first article element
  CSSInliner.process html, 'http://example.net/stylesheets' # Passed URI will be used as base directory when resolving relative URI of CSS
 
+== History
+=== 0.3.0 / 2012-05-28
+* Group external CSS files refered by <link> element by "title" attribute.
+* Work on progress: CSSPool::CSS::Declaration#expand_dimension
+
 == Note
 Note that
  <link rel="stylesheet" href="...">
