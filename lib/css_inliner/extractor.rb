@@ -45,8 +45,17 @@ module CSSInliner
     end
 
     def extract_from_link(remove_link_element = true)
+      group = nil
       @document.css('link').inject([]) do |sources, link|
         next unless link['rel'] == 'stylesheet'
+        title = link['title']
+        if title
+          if group.nil?
+            group = title
+          elsif title != group
+            next sources
+          end
+        end
         begin
           # To do: detect file encoding before open it(read only @charset value)
           open(File.join(basedir, link['href']), 'r:BOM|UTF-8') {|f| sources << f.read}

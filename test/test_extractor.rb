@@ -50,6 +50,33 @@ class TestExtractor < CSSInlinerTestCase
     assert_equal expected, @doc3.css('style').to_s
   end
 
+  def test_extract_from_grouped_files
+    doc = Nokogiri.HTML <<EOH
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" title="group1" href="group1-1.css">
+    <link rel="stylesheet" type="text/css" title="group1" href="group1-2.css">
+    <link rel="stylesheet" type="text/css" title="group2" href="group2-1.css">
+  </head>
+  <body>
+  </body>
+</html>
+EOH
+    expected = [
+'#group1-1 {
+  color: black;
+}
+',
+'#group1-2 {
+  color: black;
+}
+'
+]
+    extractor = Extractor.new(doc, @sample1_dir)
+
+    assert_equal expected, extractor.extract_from_link
+  end
+
   def test_integrate_basic
     sources = [
       '
