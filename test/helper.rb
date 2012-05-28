@@ -1,6 +1,7 @@
 require 'cover_me'
 gem 'test-unit'
 require 'test/unit'
+require 'test/unit/notify'
 require 'css_inliner'
 
 class CSSInlinerTestCase < Test::Unit::TestCase
