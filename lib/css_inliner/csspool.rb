@@ -36,7 +36,6 @@ module CSSPool
       class InvalidExpressionCountError < StandardError; end
 
       DIMENSIONS = %w[top right bottom left]
-      # property => property of [top, right, bottom, left]
       PROPERTY_EXPANSION = {}
       %w[margin padding].each do |prop|
         PROPERTY_EXPANSION[prop] = DIMENSIONS.map {|dim| "#{prop}-#{dim}"}
@@ -44,7 +43,6 @@ module CSSPool
       %w[color style width].each do |subprop|
         PROPERTY_EXPANSION["border-#{subprop}"] = DIMENSIONS.map {|dim| "border-#{dim}-#{subprop}"}
       end
-      # count of expressions => index of [top, right, bottom, left]
       EXPANSION_INDICES = {
         1 => [0, 0, 0, 0],
         2 => [0, 1, 0, 1],
