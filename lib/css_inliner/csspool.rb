@@ -75,7 +75,7 @@ module CSSPool
         expansion_map = EXPANSION_INDICES[expressions.length]
         raise InvalidExpressionCountError, "has #{expressions.length} properties" unless expansion_map
 
-        expanded_properties.each.with_index.map {|prop, i|
+        expanded_properties.map.with_index {|prop, i|
           expression = expressions[expansion_map[i]]
           Declaration.new(prop, expression, important, rule_set)
         }
