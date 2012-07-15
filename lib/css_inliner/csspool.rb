@@ -33,6 +33,7 @@ module CSSPool
     end
 
     class Declaration
+      class InvalidExpressionError < StandardError; end
       class InvalidExpressionCountError < StandardError; end
 
       COLOR_NAMES = %w[red lime blue black gray silver white maroon green navy purple olive teal yellow fuchsia aqua]
@@ -50,7 +51,6 @@ module CSSPool
       end
       %w[color style width].each do |subprop|
         PROPERTY_EXPANSION["border-#{subprop}"] = DIMENSIONS.map {|dim| "border-#{dim}-#{subprop}"}
-        p DIMENSIONS.map {|dim| "border-#{dim}-#{subprop}"} if subprop == 'width'
       end
 
       EXPANSION_INDICES = {
@@ -59,6 +59,173 @@ module CSSPool
         3 => [0, 1, 2, 1],
         4 => [0, 1, 2, 3]
       }
+
+      COLOR_NAMES = %w[
+        black
+        silver
+        gray
+        white
+        maroon
+        red
+        purple
+        fuchsia
+        green
+        lime
+        olive
+        yellow
+        navy
+        blue
+        teal
+        aqua
+
+        aliceblue
+        antiquewhite
+        aqua
+        aquamarine
+        azure
+        beige
+        bisque
+        black
+        blanchedalmond
+        blue
+        blueviolet
+        brown
+        burlywood
+        cadetblue
+        chartreuse
+        chocolate
+        coral
+        cornflowerblue
+        cornsilk
+        crimson
+        cyan
+        darkblue
+        darkcyan
+        darkgoldenrod
+        darkgray
+        darkgreen
+        darkgrey
+        darkkhaki
+        darkmagenta
+        darkolivegreen
+        darkorange
+        darkorchid
+        darkred
+        darksalmon
+        darkseagreen
+        darkslateblue
+        darkslategray
+        darkslategrey
+        darkturquoise
+        darkviolet
+        deeppink
+        deepskyblue
+        dimgray
+        dimgrey
+        dodgerblue
+        firebrick
+        floralwhite
+        forestgreen
+        fuchsia
+        gainsboro
+        ghostwhite
+        gold
+        goldenrod
+        gray
+        green
+        greenyellow
+        grey
+        honeydew
+        hotpink
+        indianred
+        indigo
+        ivory
+        khaki
+        lavender
+        lavenderblush
+        lawngreen
+        lemonchiffon
+        lightblue
+        lightcoral
+        lightcyan
+        lightgoldenrodyellow
+        lightgray
+        lightgreen
+        lightgrey
+        lightpink
+        lightsalmon
+        lightseagreen
+        lightskyblue
+        lightslategray
+        lightslategrey
+        lightsteelblue
+        lightyellow
+        lime
+        limegreen
+        linen
+        magenta
+        maroon
+        mediumaquamarine
+        mediumblue
+        mediumorchid
+        mediumpurple
+        mediumseagreen
+        mediumslateblue
+        mediumspringgreen
+        mediumturquoise
+        mediumvioletred
+        midnightblue
+        mintcream
+        mistyrose
+        moccasin
+        navajowhite
+        navy
+        oldlace
+        olive
+        olivedrab
+        orange
+        orangered
+        orchid
+        palegoldenrod
+        palegreen
+        paleturquoise
+        palevioletred
+        papayawhip
+        peachpuff
+        peru
+        pink
+        plum
+        powderblue
+        purple
+        red
+        rosybrown
+        royalblue
+        saddlebrown
+        salmon
+        sandybrown
+        seagreen
+        seashell
+        sienna
+        silver
+        skyblue
+        slateblue
+        slategray
+        slategrey
+        snow
+        springgreen
+        steelblue
+        tan
+        teal
+        thistle
+        tomato
+        turquoise
+        violet
+        wheat
+        white
+        whitesmoke
+        yellow
+        yellowgreen
+      ]
 
       # @param [Declaration] other
       # @return [Declaration] self
@@ -75,6 +242,7 @@ module CSSPool
         dup.update other
       end
 
+      # @todo consider transparent and so on
       # @return [Array<Declaration>] array of declaration expanded to style, width and color
       def expand_border
         # border: black dotted 1px => [border-color: black, border-style: dotted, border-width: 1px]
@@ -99,11 +267,14 @@ module CSSPool
             # color
             raise NotImplementedError
           when CSSPool::Terms::Ident
-            # check exp.to_s is style or color name
+            unless exp.to_s == 'style' || COLOR_NAMES.include?(exp.to_s)
+              raise InvalidExpressionError
+            end
+            # style or color
             raise NotImplementedError
           else
             # raise
-            raise NotImplementedError
+            raise InvalidExpressionError
           end
         end
 
