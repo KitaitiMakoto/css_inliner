@@ -1,4 +1,3 @@
-require 'cover_me'
 gem 'test-unit'
 require 'test/unit'
 require 'test/unit/notify'
