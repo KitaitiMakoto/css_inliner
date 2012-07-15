@@ -94,7 +94,7 @@ module CSSPool
           case exp
           when CSSPool::Terms::Number
             # width
-            decls << Declaration.new(expanded_properties[i], exp, important, rule_set)
+            decls << Declaration.new(prop, exp, important, rule_set)
           when CSSPool::Terms::Hash, CSSPool::Terms::Rgb#, color name regexp
             # color
             raise NotImplementedError
