@@ -50,6 +50,7 @@ module CSSPool
       end
       %w[color style width].each do |subprop|
         PROPERTY_EXPANSION["border-#{subprop}"] = DIMENSIONS.map {|dim| "border-#{dim}-#{subprop}"}
+        p DIMENSIONS.map {|dim| "border-#{dim}-#{subprop}"} if subprop == 'width'
       end
 
       EXPANSION_INDICES = {
@@ -80,18 +81,20 @@ module CSSPool
         # 1px => CSSPool::Terms::Number
         # #000000 => CSSPool::Terms::Hash
         # rgb(255, 255, 255) => CSSPool::Terms::Rgb
-        expanded_properties = PROPERTY_EXPANSION[property] # ["border-top-width", "border-right-width", "border-bottom-width", "border-left-width"]
+        expanded_properties = PROPERTY_EXPANSION[property]
 
         return [self] unless expanded_properties
 
         raise InvalidExpressionCountError, "has #{expressions.length} expressions" if expressions.length > expanded_properties.length
 
-        expanded = []
-        expressions.each do |exp|
+        decls = []
+        expansion_map = EXPANSION_INDICES[expressions.length]
+        expanded_properties.each.with_index do |prop, i|
+          exp = expressions[expansion_map[i]]
           case exp
           when CSSPool::Terms::Number
             # width
-            expanded << Declaration.new(expanded_properties.shift, exp, important, rule_set)
+            decls << Declaration.new(expanded_properties[i], exp, important, rule_set)
           when CSSPool::Terms::Hash, CSSPool::Terms::Rgb#, color name regexp
             # color
             raise NotImplementedError
@@ -106,7 +109,7 @@ module CSSPool
 
         # check the case "border: red 1xp;" <- style omitted
 
-        expanded
+        decls
       end
 
       # @return [Array<Declaration>] array of declaration indicating four dimensions

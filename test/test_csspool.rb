@@ -63,7 +63,7 @@ EOC
   end
 
   def test_expand_four_dimension_border_width
-    four_border_dimensions = CSSPool.CSS <<EOC
+    four_dimension_border_width = CSSPool.CSS <<EOC
 p {
   border-width: 1em 2em 3em 4em
 }
@@ -77,11 +77,25 @@ p {
 }
 EOC
     assert_equal expected.rule_sets.first.declarations.to_s,
-                 four_border_dimensions.rule_sets.first.declarations.first.expand_border.to_s
+                 four_dimension_border_width.rule_sets.first.declarations.first.expand_border.to_s
   end
 
   def test_expand_three_dimension_border_width
-    assert false
+    three_dimension_border_width = CSSPool.CSS <<EOC
+p {
+  border-width: 1em 2em 3em;
+}
+EOC
+    expected = CSSPool.CSS <<EOC
+p {
+  border-top-width: 1em;
+  border-right-width: 2em;
+  border-bottom-width: 3em;
+  border-left-width: 2em;
+}
+EOC
+    assert_equal expected.rule_sets.first.declarations.to_s,
+                 three_dimension_border_width.rule_sets.first.declarations.first.expand_border.to_s
   end
 
   def test_non_expandable_dimension
