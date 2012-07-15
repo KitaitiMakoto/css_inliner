@@ -267,10 +267,10 @@ module CSSPool
             # color
             raise NotImplementedError
           when CSSPool::Terms::Ident
-            unless exp.to_s == 'style' || COLOR_NAMES.include?(exp.to_s)
+            unless (BORDER_STYLES + BORDER_WIDTH_KEYWORDS + COLOR_NAMES + BORDER_COLOR_KEYWORDS).include?(exp.to_s)
               raise InvalidExpressionError
             end
-            # style or color
+            # style or color or width keyword
             raise NotImplementedError
           else
             # raise
