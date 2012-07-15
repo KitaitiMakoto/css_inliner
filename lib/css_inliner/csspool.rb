@@ -35,14 +35,23 @@ module CSSPool
     class Declaration
       class InvalidExpressionCountError < StandardError; end
 
+      COLOR_NAMES = %w[red lime blue black gray silver white maroon green navy purple olive teal yellow fuchsia aqua]
+
+      BORDER_STYLES = %w[none hidden solid double groove ridge inset outset dashed dotted]
+      BORDER_WIDTH_KEYWORDS = %w[thin medium thick]
+      BORDER_COLOR_KEYWORDS = %w[transparent]
+
       DIMENSIONS = %w[top right bottom left]
+
       PROPERTY_EXPANSION = {}
+      PROPERTY_EXPANSION['border'] = %w[border-style border-width border-color]
       %w[margin padding].each do |prop|
         PROPERTY_EXPANSION[prop] = DIMENSIONS.map {|dim| "#{prop}-#{dim}"}
       end
       %w[color style width].each do |subprop|
         PROPERTY_EXPANSION["border-#{subprop}"] = DIMENSIONS.map {|dim| "border-#{dim}-#{subprop}"}
       end
+
       EXPANSION_INDICES = {
         1 => [0, 0, 0, 0],
         2 => [0, 1, 0, 1],
@@ -63,6 +72,41 @@ module CSSPool
       # @return [Declaration] merged declaration
       def merge(other)
         dup.update other
+      end
+
+      # @return [Array<Declaration>] array of declaration expanded to style, width and color
+      def expand_border
+        # border: black dotted 1px => [border-color: black, border-style: dotted, border-width: 1px]
+        # 1px => CSSPool::Terms::Number
+        # #000000 => CSSPool::Terms::Hash
+        # rgb(255, 255, 255) => CSSPool::Terms::Rgb
+        expanded_properties = PROPERTY_EXPANSION[property] # ["border-top-width", "border-right-width", "border-bottom-width", "border-left-width"]
+
+        return [self] unless expanded_properties
+
+        raise InvalidExpressionCountError, "has #{expressions.length} expressions" if expressions.length > expanded_properties.length
+
+        expanded = []
+        expressions.each do |exp|
+          case exp
+          when CSSPool::Terms::Number
+            # width
+            expanded << Declaration.new(expanded_properties.shift, exp, important, rule_set)
+          when CSSPool::Terms::Hash, CSSPool::Terms::Rgb#, color name regexp
+            # color
+            raise NotImplementedError
+          when CSSPool::Terms::Ident
+            # check exp.to_s is style or color name
+            raise NotImplementedError
+          else
+            # raise
+            raise NotImplementedError
+          end
+        end
+
+        # check the case "border: red 1xp;" <- style omitted
+
+        expanded
       end
 
       # @return [Array<Declaration>] array of declaration indicating four dimensions
