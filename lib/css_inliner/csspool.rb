@@ -94,13 +94,13 @@ module CSSPool
         expanded_properties.each.with_index do |prop, i|
           exp = expressions[expansion_map[i]]
           case exp
-          when CSSPool::Terms::Number
+          when Terms::Number
             # width
             decls << Declaration.new(prop, exp, important, rule_set)
-          when CSSPool::Terms::Hash, CSSPool::Terms::Rgb#, color name regexp
+          when Terms::Hash, CSSPool::Terms::Rgb#, color name regexp
             # color
             raise NotImplementedError
-          when CSSPool::Terms::Ident
+          when Terms::Ident
             unless (BORDER_STYLES + BORDER_WIDTH_KEYWORDS + COLOR_NAMES + BORDER_COLOR_KEYWORDS).include?(exp.to_s)
               raise InvalidExpressionError
             end
