@@ -12,7 +12,7 @@ class CSSInlinerTest < CSSInlinerTestCase
 <html>
   <head>
     <title>Without Inline Style</title>
-    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <link rel="stylesheet" type="text/css" href="./style.css">
   </head>
   <body>
     <p>This is a blue line.</p>
@@ -35,7 +35,7 @@ EOC
 <html>
   <head>
     <title>With Inline Style</title>
-    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <link rel="stylesheet" type="text/css" href="./style.css">
   </head>
   <body>
     <p style="font-weight: bold;">This is a bold blue line.</p>
@@ -58,7 +58,7 @@ EOC
 <html>
   <head>
     <title>With Style Attribute</title>
-    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <link rel="stylesheet" type="text/css" href="./style.css">
     <style type="text/css">
       p {font-style: oblique;}
     </style>
@@ -84,7 +84,7 @@ EOC
 <html>
   <head>
     <title>With Inline Style and Style Attribute</title>
-    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <link rel="stylesheet" type="text/css" href="./style.css">
     <style type="text/css">
       p {font-style: oblique;}
     </style>
