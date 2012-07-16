@@ -71,22 +71,22 @@ Note that this is <b>not stable at all</b>.
  CSSInliner.process html, '.', 'article' # => The first article element
  CSSInliner.process html, 'http://example.net/stylesheets' # Passed URI will be used as base directory when resolving relative URI of CSS
 
-== History
-=== 0.3.1 / 2012-07-17
-* [BUG FIX]Fix an error which occurs when parsing non-XHTML documents
-* Change homepage: Gitorious -> GitHub
-* Reimplement some tests which have pended
-
-=== 0.3.0 / 2012-05-28
-* Group external CSS files refered by <link> element by "title" attribute.
-* Work on progress: CSSPool::CSS::Declaration#expand_dimension
-
 == Note
 Note that
  <link rel="stylesheet" href="...">
 and
  <style type="text/css"> ... </style>
 will be removed in process.
+
+= History
+== 0.3.1 / 2012-07-17
+* [BUG FIX]Fix an error which occurs when parsing non-XHTML documents
+* Change homepage: Gitorious -> GitHub
+* Reimplement some tests which have pended
+
+== 0.3.0 / 2012-05-28
+* Group external CSS files refered by <link> element by "title" attribute.
+* Work on progress: CSSPool::CSS::Declaration#expand_dimension
 
 = LICENSE
 CSS Inliner is copyright (c) 2011, 2012 KITAITI Makoto.
