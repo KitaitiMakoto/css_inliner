@@ -60,6 +60,7 @@ module CSSPool
         4 => [0, 1, 2, 3]
       }
 
+      # @todo expand dimension
       # @param [Declaration] other
       # @return [Declaration] self
       def update(other)
