@@ -3,10 +3,10 @@ require 'csspool'
 module CSSPool
   module CSS
     class << self
-      # Update declarations in base with ones in other
+      # Update declarations in +base+ with ones in +other+
       # @param [Array<Declaration>] base updated array of declarations
       # @param [Array<Declaration>] other array of declarations
-      # @return [Array<Declaration>] base itself
+      # @return [Array<Declaration>] +base+ itself
       def update_declarations(base, other)
         other.each do |other_decl|
           base_decls = base.find_all {|base_decl| base_decl.property == other_decl.property}
