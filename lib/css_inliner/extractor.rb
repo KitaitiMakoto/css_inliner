@@ -47,7 +47,7 @@ module CSSInliner
     def extract_from_link(remove_link_element = true)
       group = nil
       @document.css('link').inject([]) do |sources, link|
-        next unless link['rel'] == 'stylesheet'
+        next sources unless link['rel'] == 'stylesheet'
         title = link['title']
         if title
           if group.nil?
