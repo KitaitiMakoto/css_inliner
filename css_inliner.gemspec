@@ -24,7 +24,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "bsearch"
 
   s.add_development_dependency "test-unit-full"
-  s.add_development_dependency "cover_me", '~> 1'
   s.add_development_dependency "yard"
   s.add_development_dependency "pry"
   s.add_development_dependency "pry-doc"
