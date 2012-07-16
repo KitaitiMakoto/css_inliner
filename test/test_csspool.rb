@@ -149,7 +149,7 @@ EOC
   def test_expand_no_dimension_border_width
     no_dimension_border_width = CSSPool.CSS <<EOC
 p {
-  border-width: none;
+  border-width: zero;
 }
 EOC
     assert_raise CSSPool::CSS::Declaration::InvalidExpressionError do
