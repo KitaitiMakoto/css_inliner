@@ -14,7 +14,7 @@ module CSSInliner
     # @param [String] format Format to output, html or xhtml
     # @return [String] HTML source
     def process(html, basedir = '.', element = nil, format = 'html')
-      doc = html.instance_of?(Nokogiri::XML::Document) ? html : Nokogiri.XML(html)
+      doc = html.instance_of?(Nokogiri::XML::Document) ? html : Nokogiri.HTML(html)
       doc = Inliner.new(doc, basedir).inline
       doc = doc.css(element)[0] if element
       case format
