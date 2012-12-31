@@ -45,7 +45,37 @@ div {
   border-top: blue 1em thin;
 }
 EOC
-    assert false
+    expected = CSSPool.CSS <<EOC
+p {
+  border-top-width: 1px;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  border-top-color: red;
+  border-right-color: red;
+  border-bottom-color: red;
+  border-left-color: red;
+}
+div {
+  border-top-width: 1px;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  border-top-color: red;
+  border-right-color: red;
+  border-bottom-color: red;
+  border-left-color: red;
+  border-top-style: thin;
+  border-right-style: thin;
+  border-bottom-style: thin;
+  border-left-style: thin;
+}
+EOC
+
+    expected = expected.rule_sets.map {|rule_set| rule_set.declarations.map(&:expand_border)}
+    complex_border.rule_sets.map {|rule_set| rule_set.declarations.map(&:expand_border)}
+
+    assert_equal expected.rule_sets, complex_border.rule_sets
   end
 
   def test_non_expandable_border
