@@ -60,7 +60,7 @@ EOC
     <title>With Style Attribute</title>
     <link rel="stylesheet" type="text/css" href="./style.css">
     <style type="text/css">
-      p {font-style: oblique;}
+      p {font-style: oblique; border: dotted;}
     </style>
   </head>
   <body>
@@ -76,7 +76,7 @@ EOC
     inlined = process(html, css)
     doc = Nokogiri.HTML(inlined)
     style = doc.search('p').first['style'].strip.gsub(/ +/, '')
-    assert_equal 'color:blue;font-style:oblique;', style
+    assert_equal 'color:blue;font-style:oblique;border-top-style:dotted;border-right-style:dotted;border-bottom-style:dotted;border-left-style:dotted;', style
   end
 
   def test_process_with_inline_style_and_style_elem
