@@ -62,10 +62,8 @@ div {
   border-top-style: solid;
 }
 EOC
-    assert_equal expected.rule_sets.first.declarations.map(&:to_s).sort,
-                 complex_border.rule_sets.first.declarations.map {|decl| decl.expand_border.map(&:expand_dimension)}.flatten.map(&:to_s).sort
-    assert_equal expected.rule_sets.last.declarations.map(&:to_s).sort,
-                 complex_border.rule_sets.last.declarations.map {|decl| decl.expand_border.map(&:expand_dimension)}.flatten.map(&:to_s).sort
+    assert_equal expected.rule_sets.map {|rs| rs.declarations}.flatten.map(&:to_s).sort,
+    complex_border.rule_sets.map {|rs| rs.declarations.map {|decl| decl.expand_border.map(&:expand_dimension)}}.flatten.map(&:to_s).sort
   end
 
   def test_non_expandable_border
