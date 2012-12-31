@@ -72,6 +72,8 @@ div {
 }
 EOC
 
+    pend
+
     expected = expected.rule_sets.map {|rule_set| rule_set.declarations.map(&:expand_border)}
     complex_border.rule_sets.map {|rule_set| rule_set.declarations.map(&:expand_border)}
 
@@ -91,6 +93,54 @@ p {
 EOC
     assert_equal expected.rule_sets.first.declarations.to_s,
                  non_expandable.rule_sets.first.declarations.first.expand_border.to_s
+  end
+
+  def test_expand_border_with_three_expressions
+    non_expanded = CSSPool.CSS <<EOC
+p {
+  border: black dotted 1px;
+}
+EOC
+    expected = CSSPool.CSS <<EOC
+p {
+  border-color: black;
+  border-style: dotted;
+  border-width: 1px;
+}
+EOC
+    assert_equal expected.rule_sets.map {|rs| rs.declarations}.flatten.map(&:to_s).sort,
+                 non_expanded.rule_sets.map {|rs| rs.declarations.map(&:expand_border)}.flatten.map(&:to_s).sort
+  end
+
+  def test_expand_border_with_two_expressions
+    non_expanded = CSSPool.CSS <<EOC
+p {
+  border: #FFFFFF thin;
+}
+EOC
+    expected = CSSPool.CSS <<EOC
+p {
+  border-color: #FFFFFF;
+  border-width: thin;
+}
+EOC
+    assert_equal expected.rule_sets.map {|rs| rs.declarations}.flatten.map(&:to_s).sort,
+                 non_expanded.rule_sets.map {|rs| rs.declarations.map(&:expand_border)}.flatten.map(&:to_s).sort
+  end
+
+  def test_expand_border_with_one_expression
+    non_expanded = CSSPool.CSS <<EOC
+p {
+  border: rgb(100%, 0%, 0%);
+}
+EOC
+    expected = CSSPool.CSS <<EOC
+p {
+  border-color: rgb(100%, 0%, 0%);
+}
+EOC
+    assert_equal expected.rule_sets.map {|rs| rs.declarations}.flatten.map(&:to_s).sort,
+                 non_expanded.rule_sets.map {|rs| rs.declarations.map(&:expand_border)}.flatten.map(&:to_s).sort
   end
 
   def test_expand_five_dimension_border_width

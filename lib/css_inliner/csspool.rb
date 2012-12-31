@@ -64,6 +64,7 @@ module CSSPool
       # @param [Declaration] other
       # @return [Declaration] self
       def update(other)
+        warn "@todo expand dimension"
         raise ArgumentError, 'different property' unless property == other.property
         self.expressions = other.expressions if !important? or other.important?
         self
@@ -90,29 +91,13 @@ module CSSPool
         raise InvalidExpressionCountError, "has #{expressions.length} expressions" if expressions.length > expanded_properties.length
 
         decls = []
-        expansion_map = EXPANSION_INDICES[expressions.length]
-        expanded_properties.each.with_index do |prop, i|
-          exp = expressions[expansion_map[i]]
-          case exp
-          when Terms::Number
-            # width
-            decls << Declaration.new(prop, exp, important, rule_set)
-          when Terms::Hash, CSSPool::Terms::Rgb#, color name regexp
-            # color
-            raise NotImplementedError
-          when Terms::Ident
-            unless (BORDER_STYLES + BORDER_WIDTH_KEYWORDS + COLOR_NAMES + BORDER_COLOR_KEYWORDS).include?(exp.to_s)
-              raise InvalidExpressionError
+        expanded_properties.each do |prop|
+          expressions.each do |exp|
+            if prop == 'border-' + find_property(exp)
+              decls << Declaration.new(prop, exp, important, rule_set)
             end
-            # style or color or width keyword
-            raise NotImplementedError
-          else
-            # raise
-            raise InvalidExpressionError
           end
         end
-
-        # check the case "border: red 1xp;" <- style omitted
 
         decls
       end
@@ -129,6 +114,25 @@ module CSSPool
           expression = expressions[expansion_map[i]]
           Declaration.new(prop, expression, important, rule_set)
         }
+      end
+
+      private
+
+      def find_property(expression)
+        case expression
+        when Terms::Number
+          'width'
+        when Terms::Hash, Terms::Rgb
+          'color'
+        when Terms::Ident
+          if BORDER_STYLES.include? expression.to_s
+            'style'
+          elsif BORDER_WIDTH_KEYWORDS.include? expression.to_s
+            'width'
+          elsif (COLOR_NAMES + BORDER_COLOR_KEYWORDS).include? expression.to_s
+            'color'
+          end
+        end
       end
     end
   end
