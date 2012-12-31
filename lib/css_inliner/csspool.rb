@@ -63,11 +63,9 @@ module CSSPool
         4 => [0, 1, 2, 3]
       }
 
-      # @todo expand dimension
       # @param [Declaration] other
       # @return [Declaration] self
       def update(other)
-        warn "@todo expand dimension"
         raise ArgumentError, 'different property' unless property == other.property
         self.expressions = other.expressions if !important? or other.important?
         self
