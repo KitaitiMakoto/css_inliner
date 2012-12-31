@@ -89,5 +89,5 @@ will be removed in process.
 * Work on progress: CSSPool::CSS::Declaration#expand_dimension
 
 = LICENSE
-CSS Inliner is copyright (c) 2011, 2012 KITAITI Makoto.
+CSS Inliner is copyright (c) 2011, 2012, 2013 KITAITI Makoto.
 Distribued under the MIT license, see LISENCE file for the term.
