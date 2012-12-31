@@ -42,7 +42,7 @@ p {
   border: red 1px;
 }
 div {
-  border-top: blue 1em thin;
+  border-top: blue solid thin;
 }
 EOC
     expected = CSSPool.CSS <<EOC
@@ -57,27 +57,15 @@ p {
   border-left-color: red;
 }
 div {
-  border-top-width: 1px;
-  border-right-width: 1px;
-  border-bottom-width: 1px;
-  border-left-width: 1px;
-  border-top-color: red;
-  border-right-color: red;
-  border-bottom-color: red;
-  border-left-color: red;
-  border-top-style: thin;
-  border-right-style: thin;
-  border-bottom-style: thin;
-  border-left-style: thin;
+  border-top-width: thin;
+  border-top-color: blue;
+  border-top-style: solid;
 }
 EOC
-
-    pend
-
-    expected = expected.rule_sets.map {|rule_set| rule_set.declarations.map(&:expand_border)}
-    complex_border.rule_sets.map {|rule_set| rule_set.declarations.map(&:expand_border)}
-
-    assert_equal expected.rule_sets, complex_border.rule_sets
+    assert_equal expected.rule_sets.first.declarations.map(&:to_s).sort,
+                 complex_border.rule_sets.first.declarations.map {|decl| decl.expand_border.map(&:expand_dimension)}.flatten.map(&:to_s).sort
+    assert_equal expected.rule_sets.last.declarations.map(&:to_s).sort,
+                 complex_border.rule_sets.last.declarations.map {|decl| decl.expand_border.map(&:expand_dimension)}.flatten.map(&:to_s).sort
   end
 
   def test_non_expandable_border
@@ -169,7 +157,7 @@ p {
 }
 EOC
     assert_equal expected.rule_sets.first.declarations.to_s,
-                 four_dimension_border_width.rule_sets.first.declarations.first.expand_border.to_s
+                 four_dimension_border_width.rule_sets.first.declarations.first.expand_dimension.to_s
   end
 
   def test_expand_three_dimension_border_width
@@ -187,7 +175,7 @@ p {
 }
 EOC
     assert_equal expected.rule_sets.first.declarations.to_s,
-                 three_dimension_border_width.rule_sets.first.declarations.first.expand_border.to_s
+                 three_dimension_border_width.rule_sets.first.declarations.first.expand_dimension.to_s
   end
 
   def test_expand_two_dimension_border_width
@@ -205,7 +193,7 @@ p {
 }
 EOC
     assert_equal expected.rule_sets.first.declarations.to_s,
-                 two_dimension_border_width.rule_sets.first.declarations.first.expand_border.to_s
+                 two_dimension_border_width.rule_sets.first.declarations.first.expand_dimension.to_s
   end
 
   def test_expand_one_dimension_border_width
@@ -226,15 +214,13 @@ EOC
                  one_dimension_border_width.rule_sets.first.declarations.first.expand_border.to_s
   end
 
-  def test_expand_no_dimension_border_width
+  def test_expand_border_with_invalid_property
     no_dimension_border_width = CSSPool.CSS <<EOC
 p {
-  border-width: zero;
+  border: zero;
 }
 EOC
-    assert_raise CSSPool::CSS::Declaration::InvalidExpressionError do
-      no_dimension_border_width.rule_sets.first.declarations.first.expand_border
-    end
+    assert_empty no_dimension_border_width.rule_sets.first.declarations.first.expand_border
   end
 
   def test_non_expandable_dimension
