@@ -8,8 +8,10 @@ module CSSPool
       # @param [Array<Declaration>] other array of declarations
       # @return [Array<Declaration>] +base+ itself
       def update_declarations(base, other)
-        other.each do |other_decl|
+        other_decls = other.map {|decl| decl.expand_border.map(&:expand_dimension)}.flatten
+        other_decls.each do |other_decl|
           base_decls = base.find_all {|base_decl| base_decl.property == other_decl.property}
+          base_decls = base_decls.map {|decl| decl.expand_border.map(&:expand_dimension)}.flatten
           if base_decls.empty?
             base << other_decl
           else
