@@ -79,6 +79,9 @@ and
 will be removed in process.
 
 = History
+== 0.3.2 / 2013-01-01
+* Expand dimensions(top, right, bottom, left) and properties of borders(style, width, color) when inlining
+
 == 0.3.1 / 2012-07-17
 * [BUG FIX]Fix an error which occurs when parsing non-XHTML documents
 * Change homepage: Gitorious -> GitHub
