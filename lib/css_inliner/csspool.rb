@@ -69,7 +69,19 @@ module CSSPool
       # @return [Declaration] self
       def update(other)
         raise ArgumentError, 'different property' unless property == other.property
-        self.expressions = other.expressions if !important? or other.important?
+
+        if important?
+          if other.important?
+            self.expressions |= other.expressions
+          end
+        else
+          if other.important?
+            self.expressions = other.expressions
+          else
+            self.expressions |= other.expressions
+          end
+        end
+
         self
       end
       alias merge! update

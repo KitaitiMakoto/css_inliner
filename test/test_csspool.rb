@@ -25,7 +25,7 @@ EOC
     other = @css.rule_sets.last.declarations.first
     base.update other
 
-    assert_equal 'color: red;', base.to_css.strip
+    assert_equal 'color: black red;', base.to_css.strip
   end
 
   def test_udpate_with_important
